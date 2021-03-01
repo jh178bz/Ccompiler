@@ -107,6 +107,12 @@ Token *tokenize() {
       continue;
     }
 
+    if ('a' <= *p && *p <= 'z') {
+      cur = new_token(TK_IDENT, cur, p++, 0);
+      cur->len = 1;
+      continue;
+    }
+
     //数字
     if (isdigit(*p)) {
       cur = new_token(TK_NUM, cur, p, 0);

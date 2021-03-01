@@ -1,4 +1,7 @@
 #include "9cc.h"
+
+Node *code[100];
+
 //
 // Parser
 //
@@ -22,7 +25,9 @@ Node *new_num(int val) {
   return node;
 }
 
+Node *stmt();
 Node *expr();
+Node *assign();
 Node *equality();
 Node *relational();
 Node *add();
@@ -30,9 +35,28 @@ Node *mul();
 Node *unary();
 Node *primary();
 
+Node *assign() {
+  Node *node = equality();
+  if (consume("="))
+    node = new_binary(ND_ASSIGN, node, assign());
+    return node;
+}
 //expr = equality
 Node *expr() {
-    return equality();
+    return assign();
+}
+
+Node *stmt() {
+  Node *node = expr();
+  expect(";");
+  return node;
+}
+
+void program() {
+  int i = 0;
+  while (!at_eof())
+    code[i++] = stmt();
+  code[i] = NULL;
 }
 
 Node *equality() {
